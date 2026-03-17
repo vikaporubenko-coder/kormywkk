@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <!-- Важно для правильного масштабирования на мобильных -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Сотрудники</title>
+    <style>
+        /* Сброс отступов и базовые настройки */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #ffd9e6; /* Нежный pink */
+            margin: 0;
+            padding: 10px; /* Отступы по краям для мобильных */
+            min-height: 100vh;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        /* Адаптивный баннер */
+        .baner {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            background: linear-gradient(135deg, #d7ccc8 0%, #8d6e63 100%);
+            color: #4e342e;
+            padding: 15px; /* Немного уменьшил для мобильных */
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 10px auto 20px; /* Центрирование */
+            border: 1px solid #a1887f;
+        }
+
+        .baner h2 {
+            text-align: center;
+            margin: 0 0 10px 0;
+            font-size: clamp(18px, 5vw, 22px); /* Адаптивный размер */
+            font-weight: bold;
+            color: #3e2723;
+            word-break: break-word; /* Перенос длинных слов */
+        }
+
+        .baner .contact-info {
+            text-align: right;
+            margin-top: 10px;
+        }
+
+        .baner ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .baner ul li {
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .baner ul li:first-child {
+            margin-left: 0;
+        }
+
+        .baner ul li:before {
+            content: "•";
+            color: #ffffff;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .baner .phone {
+            font-size: clamp(12px, 3.5vw, 14px); /* Адаптивный телефон */
+            color: #ffffff;
+            font-weight: bold;
+            white-space: nowrap; /* Телефон не переносим */
+        }
+
+        /* Сетка галереи — адаптивная */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px; /* Уменьшил расстояние между карточками */
+            max-width: 1200px;
+            margin: 20px auto 10px;
+            padding: 5px; /* Небольшие отступы */
+        }
+
+        /* Карточка сотрудника */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px; /* Чуть скругленнее */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease;
+            background: white;
+            aspect-ratio: 1 / 1.2; /* Примерное соотношение, чтобы карточки были не слишком вытянуты */
+            max-width: 100%;
+        }
+
+        /* Для планшетов и выше вернем обычное поведение */
+        @media (min-width: 768px) {
+            .gallery-item {
+                aspect-ratio: auto; /* Отключаем фиксированное соотношение, если нужно */
+                height: auto;
+            }
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.02); /* Чуть меньше увеличение, чтобы на телефонах не вылетало */
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05); /* Уменьшил зум, чтобы текст не убегал */
+        }
+
+        /* Текст при наведении/тапе */
+        .gallery-text {
+            position: absolute;
+            bottom: -100%;
+            left: 0;
+            right: 0;
+            background: rgba(141, 110, 99, 0.95); /* Чуть плотнее фон */
+            color: white;
+            padding: 12px 8px;
+            text-align: center;
+            transition: bottom 0.25s ease;
+            font-family: Arial, sans-serif;
+            backdrop-filter: blur(2px); /* Эффект для современных браузеров */
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Для устройств с сенсорным экраном: текст появляется по клику (через :active) */
+        .gallery-item:active .gallery-text {
+            bottom: 0;
+        }
+
+        /* На устройствах без наведения (сенсорных) показываем текст по клику/тапу */
+        @media (hover: hover) {
+            .gallery-item:hover .gallery-text {
+                bottom: 0;
+            }
+        }
+
+        /* Для маленьких экранов корректируем размер шрифта */
+        .gallery-text h3 {
+            margin: 0 0 5px 0;
+            font-size: clamp(16px, 4vw, 18px);
+            font-weight: bold;
+        }
+
+        .gallery-text p {
+            margin: 0;
+            font-size: clamp(13px, 3.5vw, 14px);
+            opacity: 0.9;
+        }
+
+        /* Мелкие исправления для совсем узких экранов */
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+            
+            .gallery {
+                gap: 10px;
+                grid-template-columns: 1fr; /* Одна колонка на очень узких */
+            }
+            
+            .gallery-item {
+                aspect-ratio: 1 / 1.1; /* Чуть менее высокие */
+            }
+            
+            .gallery-text {
+                padding: 10px 5px;
+            }
+            
+            /* Убираем искажение для мобильных: текст будет всегда виден при клике */
+            .gallery-text {
+                bottom: 0; /* Для мобильных можно всегда показывать, но оставим интерактив */
+                /* Альтернатива: всегда видно */
+            }
+            /* Но так как был запрос на hover-эффект, оставим по нажатию */
+        }
+
+        /* Для очень маленьких экранов (до 360px) */
+        @media (max-width: 360px) {
+            .baner h2 {
+                font-size: 16px;
+            }
+            .baner .phone {
+                font-size: 11px;
+                white-space: normal; /* Разрешаем перенос, если совсем узко */
+            }
+            .baner ul li {
+                display: block; /* Телефон на отдельной строке */
+                text-align: center;
+            }
+            .baner ul li:before {
+                display: none; /* Убираем точку */
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Баннер с контактами -->
+    <div class="baner">
+        <h2>Приходите устраиваться к нам!</h2> <!-- Убрал лишние "!" для аккуратности -->
+        <div class="contact-info">
+            <ul>
+                <li class="phone">+7 (328) 123-45-67</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Галерея сотрудников -->
+    <div class="gallery">
+        <div class="gallery-item">
+            <img src="immg/диана.jpg" alt="Директор Диана">
+            <div class="gallery-text">
+                <h3>Директор Диана</h3>
+                <p>Главная из Москвы</p>
+            </div>
+        </div>
+
+        <div class="gallery-item">
+            <img src="immg/алина.jpg" alt="Директор Алина">
+            <div class="gallery-text">
+                <h3>Директор Алина</h3>
+                <p>Главная по ценам</p>
+            </div>
+        </div>
+
+        <div class="gallery-item">
+            <img src="immg/вика.jpg" alt="Директор Вика">
+            <div class="gallery-text">
+                <h3>Директор Вика</h3>
+                <p>Главная хз не придумала</p>
+            </div>
+        </div>
+
+        <div class="gallery-item">
+            <img src="immg/диана повар.jpg" alt="Повар Диана">
+            <div class="gallery-text">
+                <h3>Повар / Кассир</h3> <!-- Исправил опечатку -->
+                <p>Ваще ахуела</p> <!-- Оставил, но можно сменить на "Очень старается" :) -->
+            </div>
+        </div>
+
+        <div class="gallery-item">
+            <img src="immg/алина повар.jpg" alt="Повар Алина">
+            <div class="gallery-text">
+                <h3>Повар</h3>
+                <p>По блату</p>
+            </div>
+        </div>
+
+        <div class="gallery-item">
+            <img src="immg/вика повар.jpg" alt="Повар Вика">
+            <div class="gallery-text">
+                <h3>Повар</h3>
+                <p>Меня вообще не взяли</p>
+            </div>
+        </div>
+
+        <div class="gallery-item">
+            <img src="immg/фото1.jpg" alt="Коллектив">
+            <div class="gallery-text">
+                <h3>Мы поднялись</h3>
+                <p>Саси кормушка</p> <!-- Фольклорная фраза, можно заменить -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>
